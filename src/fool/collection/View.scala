@@ -11,34 +11,16 @@
 package fool
 package collection
 
-trait Seq[+A] /*extends Iterable[A]*/ { self =>
-  def isEmpty: Boolean
+trait View[+A] extends Iterable[A]
 
-  def nonEmpty: Boolean = !isEmpty
+object View {
+  sealed trait Trans[+A, +B] extends View[B]
 
-  def equalMembers[B >: A](other: Seq[B]): Boolean
-
-  def apply(index: Int): Option[A]
-
-  def foldRight[B](start: => B)(f: (A, => B) => B): B
-
-  def map[B](f: A => B): Seq[B]
-
-  //def mapV[B](f: A => B)(implicit tv: FromIterable[Seq]): View[B] =
-  //  tv.fromIterable(self).map(f)
+  case class Map[A,B] private (val inner: Iterable[A], val f: A => B) extends Trans[A, B] {
+    def iterator = inner.iterator.map(f)
+  }
 }
 
-trait NonEmptySeq[+A] extends Seq[A] {
-  def isEmpty = false
-
-  def head: A
-  def tail: List[A]
-
-  override def apply(index: Int): Option[A] =
-    if (index > 0) (tail: @switch) match {
-      case Nil => None
-      case xs: NonEmptyList[_] => xs.apply(index - 1)
-    }
-    else if (index < 0) None
-    else Some(head)
+trait FromIterable[+C[X] <: Iterable[X]] {
+  def fromIterable[B](it: Iterable[B]): View[B]
 }

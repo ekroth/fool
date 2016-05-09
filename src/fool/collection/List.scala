@@ -31,9 +31,9 @@ sealed trait List[+A] extends Seq[A] { self =>
       case _ => false
     }
 
-  override def map[B](f: A => B): List[B] = Nil
+  def map[B](f: A => B): List[B] = Nil
 
-  override def foldRight[B](start: => B)(f: (A, => B) => B): B = start
+  def foldRight[B](start: => B)(f: (A, => B) => B): B = start
 }
 
 object List {
@@ -48,8 +48,8 @@ object List {
  * The `NonEmptyList` implements equality for its subtypes
  */
 sealed trait NonEmptyList[+A] extends List[A] with NonEmptySeq[A] { self =>
-  override def equalMembers[B >: A](other: Seq[B]): Boolean = (self, other) match {
-    case (xs: NonEmptyList[_], ys: NonEmptyList[_]) =>
+  def equalMembers[B >: A](other: Seq[B]): Boolean = (self, other) match {
+    case (xs: NonEmptySeq[_], ys: NonEmptySeq[_]) =>
       (xs.head == ys.head) && (xs.tail equalMembers ys.tail)
     case _ => false
   }

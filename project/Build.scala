@@ -33,7 +33,8 @@ object FoolBuild extends Build {
       //coverageExcludedFiles in Global := "src/fool/package.scala", //FIXME, not working
 
       libraryDependencies ++= Seq(
-        "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+        "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+        "org.scalacheck" %% "scalacheck" % "1.12.5" % "test"
       ),
 
       // enable improved incremental compilation algorithm
